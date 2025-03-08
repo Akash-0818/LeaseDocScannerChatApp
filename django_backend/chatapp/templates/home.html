@@ -75,6 +75,9 @@
     </div>
 
     <script>
+
+        let ctr = 0;
+
         function sendMessage() {
             const messageInput = document.getElementById('messageInput');
             const message = messageInput.value.trim();
@@ -94,6 +97,14 @@
                 // Clear the input field
                 messageInput.value = '';
 
+                // dotted reply bubble initially
+                const botBubble = document.createElement('div');
+                ctr += 1;
+                botBubble.id = "replybubble_" + ctr.toString();
+                botBubble.classList.add('message', 'received');
+                botBubble.textContent = "...";
+                chatContainer.appendChild(botBubble);
+
                 const csrftoken = getCSRFToken();
 
                 // Send the message to the server via AJAX
@@ -107,33 +118,15 @@
                 })
                 .then(response => response.json())
                 .then(data => {
-                    // Append the response message from the server
-                    const botBubble = document.createElement('div');
-                    botBubble.classList.add('message', 'received');
-                    if (data.status != "OK") botBubble.textContent = "Error!";
-                    else botBubble.textContent = data.response;
-                    chatContainer.appendChild(botBubble);
+                    // Change current reply bubble
+                    if (data.status=='OK') botBubble.textContent = data.response;
+                    else botBubble.textContent = "Error in response!";
+                    
 
                     // Scroll to the latest message
                     chatContainer.scrollTop = chatContainer.scrollHeight;
                 });
             }
-        }
-
-        // Function to get the CSRF token
-        function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
         }
 
         function getCSRFToken() {
