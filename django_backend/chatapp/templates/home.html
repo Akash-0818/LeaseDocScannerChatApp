@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .chat-container {
+            flex-grow: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            max-width: 60%;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 20px;
+        }
+
+        .sent {
+            background-color: #00e64d;
+            align-self: flex-end;
+        }
+
+        .received {
+            background-color: #f1f1f1;
+            align-self: flex-start;
+        }
+
+        .input-container {
+            display: flex;
+            border-top: 1px solid #ddd;
+            padding: 10px;
+            background-color: #fff;
+        }
+
+        .input-container input {
+            flex-grow: 1;
+            padding: 10px;
+            border-radius: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .input-container button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 50%;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chat-container" id="chatContainer">
+        <!-- Messages will go here -->
+    </div>
+
+    <div class="input-container">
+        <input type="text" id="messageInput" placeholder="Type a message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+
+            if (message) {
+                const chatContainer = document.getElementById('chatContainer');
+                const messageBubble = document.createElement('div');
+                messageBubble.classList.add('message', 'sent');
+                messageBubble.textContent = message;
+                chatContainer.appendChild(messageBubble);
+
+                // Scroll to the latest message
+                chatContainer.scrollTop = chatContainer.scrollHeight;
+
+                // Clear the input field
+                messageInput.value = '';
+            }
+        }
+    </script>
+
+</body>
+</html>
