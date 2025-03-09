@@ -31,6 +31,7 @@
             margin-bottom: 10px;
             padding: 10px;
             border-radius: 20px;
+            border: 1px solid black;
         }
 
         .sent {
@@ -39,7 +40,7 @@
         }
 
         .received {
-            background-color: #f1f1f1;
+            background-color: #4e95f2;
             align-self: flex-start;
         }
 
@@ -128,7 +129,23 @@
                 .then(data => {
                     clearInterval(interval);
                     // Change current reply bubble
-                    if (data.status=='OK') botBubble.textContent = data.response;
+                    if (data.status=='OK')
+                    {
+                        botBubble.textContent = "";
+                        let index = 0;
+
+                        function typeNext() {
+                            let text = data.response; 
+                            let speed = 24;
+                            if (index < text.length) {
+                                botBubble.textContent += text[index]; // Add one character at a time
+                                index++;
+                                setTimeout(typeNext, speed);
+                            }
+                        }
+                        typeNext();
+
+                    }
                     else botBubble.textContent = "Error in response!";
                     
 
@@ -140,6 +157,21 @@
 
         function getCSRFToken() {
             return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
+        function typeEffect(text, speed) {
+            const textarea = document.getElementById("output-textarea");
+            textarea.textContent = ""; // Clear previous content
+            
+            let index = 0;
+            function typeNext() {
+                if (index < text.length) {
+                    textarea.textContent += text[index]; // Add one character at a time
+                    index++;
+                    setTimeout(typeNext, speed);
+                }
+            }
+            typeNext();
         }
     </script>
 
