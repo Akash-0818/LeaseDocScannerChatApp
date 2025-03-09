@@ -12,6 +12,10 @@
             flex-direction: column;
             height: 100vh;
             margin: 0;
+            background-image: url("/static/bgimage3.avif");
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
         }
 
         .chat-container {
@@ -43,7 +47,6 @@
             display: flex;
             border-top: 1px solid #ddd;
             padding: 10px;
-            background-color: #fff;
         }
 
         .input-container input {
@@ -51,6 +54,7 @@
             padding: 10px;
             border-radius: 20px;
             border: 1px solid #ddd;
+            background: transparent;
         }
 
         .input-container button {
@@ -98,12 +102,16 @@
                 messageInput.value = '';
 
                 // dotted reply bubble initially
+                let dotcount = 1;
+                let increasing = true;
                 const botBubble = document.createElement('div');
-                ctr += 1;
-                botBubble.id = "replybubble_" + ctr.toString();
                 botBubble.classList.add('message', 'received');
-                botBubble.textContent = "...";
                 chatContainer.appendChild(botBubble);
+                const interval = setInterval(() => {
+                    dotcount += 1;
+                    if (dotcount == 4) dotcount = 1; 
+                    botBubble.textContent = '.'.repeat(dotcount);
+                }, 1000);
 
                 const csrftoken = getCSRFToken();
 
@@ -118,6 +126,7 @@
                 })
                 .then(response => response.json())
                 .then(data => {
+                    clearInterval(interval);
                     // Change current reply bubble
                     if (data.status=='OK') botBubble.textContent = data.response;
                     else botBubble.textContent = "Error in response!";
