@@ -21,5 +21,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home, name='home'),
-    path('process_message/',views.process_message, name='process_message')
+    path('process_message/',views.process_message, name='process_message'),
+    path('run-background-task/', views.run_background_task, name='run-background-task')
 ]

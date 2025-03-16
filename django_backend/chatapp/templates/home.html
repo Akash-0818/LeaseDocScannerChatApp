@@ -18,6 +18,13 @@
             background-repeat: no-repeat;
         }
 
+        #full-content {
+            flex-grow: 1; /* Allows chat-container to take up full available space */
+            display: flex;
+            flex-direction: column;
+            visibility: hidden;
+        }
+
         .chat-container {
             flex-grow: 1;
             padding: 10px;
@@ -43,11 +50,16 @@
             background-color: #4e95f2;
             align-self: flex-start;
         }
-
         .input-container {
+            position: fixed;  /* Fixes it at the bottom */
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: transparent;
+            padding: 10px;
             display: flex;
             border-top: 1px solid #ddd;
-            padding: 10px;
+            box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
         }
 
         .input-container input {
@@ -66,18 +78,78 @@
             border-radius: 50%;
             margin-left: 10px;
         }
+
+        #loadingOverlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #ccc;
+            border-top: 5px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        #loadingText {
+            margin-top: 10px;  /* Push text below the spinner */
+            font-size: 16px;
+            font-weight: bold;
+            color: #333;
+        }
+
     </style>
 </head>
 <body>
 
-    <div class="chat-container" id="chatContainer">
-        <!-- Messages will go here -->
+    <div id="loadingOverlay">
+        <div class="spinner"></div>
+        <p id="loadingText">Loading, please wait...</p>
     </div>
 
-    <div class="input-container">
-        <input type="text" id="messageInput" placeholder="Type a message..." />
-        <button onclick="sendMessage()">Send</button>
+    <div id="full-container">
+        <div id="full-content">
+            <div class="chat-container" id="chatContainer">
+                <!-- Messages will go here -->
+            </div>
+        </div>
+    
+        <div class="input-container">
+            <input type="text" id="messageInput" placeholder="Type a message..." />
+            <button onclick="sendMessage()">Send</button>
+        </div>
     </div>
+
+    <script>
+        window.onload = function () {
+            console.log("Background task starting...");
+            
+            // Simulate background task with an AJAX request
+            fetch('/run-background-task')
+                .then(response => response.json())
+                .then(data => {
+                    console.log("Background task complete:", data.message);
+                    document.getElementById('loadingOverlay').style.display = 'none';
+                    document.getElementById('full-content').style.visibility = 'visible';
+                });
+        };
+
+    </script>
 
     <script>
 
