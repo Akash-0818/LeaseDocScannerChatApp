@@ -124,3 +124,30 @@ STATIC_URL = '/static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+import atexit
+import os
+from pinecone import Pinecone
+from dotenv import load_dotenv
+
+def on_shutdown():
+    print("Server is shutting down... Perform cleanup tasks here.")
+    # Load environment variables
+    load_dotenv()
+
+    # Initialize Pinecone instance with API key
+    pc = Pinecone(api_key=os.environ.get("PINECONE_API_KEY"))
+
+    # Specify the index name
+    index_name = os.environ.get("INDEX_NAME")
+
+    # Connect to the index and delete all vectors
+    if index_name in pc.list_indexes().names():
+        index = pc.Index(index_name)
+        index.delete(delete_all=True)
+        print(f"All vectors from index '{index_name}' have been deleted.")
+    else:
+        print(f"Index '{index_name}' does not exist.")
+
+if os.environ.get("RUN_MAIN") == "true":
+    atexit.register(on_shutdown)
